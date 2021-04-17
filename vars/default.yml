@@ -1,0 +1,9 @@
+---
+copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+sys_packages: [ 'curl', 'vim', 'git', 'ufw', 'rsync']
+
+# Docker
+create_containers: 1
+default_container_name: docker
+default_container_image: ubuntu
+default_container_command: sleep 1d

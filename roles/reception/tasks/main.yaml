@@ -1,0 +1,5 @@
+---
+# This playbook contains all actions that will be run on "local" host.
+
+- name: Rsync data to host
+  include_tasks: 01_rsync_reception.yaml

@@ -1,0 +1,20 @@
+---
+  - name: Task create hostname if needed
+    hostname:
+      name: "{{ var_hostname }}"
+    when: (var_hostname is defined) and (var_hostname|length > 0)
+
+  - name: Test1
+    shell: echo "The variable 'foo' is defined and not empty"
+    when: (foo is defined) and (foo|length > 0)
+
+#    - name: Test2
+#      fail: msg="The variable 'bar' is not defined or empty"
+#      when: (bar is not defined) or (bar|length == 0)
+
+
+
+# - name: Set hostname
+#   #hosts: dockerreception
+#   become: true
+#   tasks:

@@ -1,0 +1,58 @@
+---
+- name: Create a login user
+  hosts: all
+  become: true
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+    - name: Ensure group "docker" exists with correct gid 
+      ansible.builtin.group:
+          name: docker
+          state: present
+
+    - name: Create User
+      user:
+          name: "{{ var_create_user }}"
+          password: "{{ var_user_password }}"
+          groups: # Empty by default, here we give it some groups
+            - adm
+            - sudo
+            - docker
+          state: present
+          shell: /bin/bash         # Defaults to /bin/bash
+          system: yes              # Defaults to no
+          createhome: yes          # Defaults to yes
+          #home: /home/mea  # Defaults to /home/<username>---
+      tags:
+        - initial
+
+
+    - name: Set authorized key for remote user
+      authorized_key:
+        user: "{{ var_create_user }}"
+        state: present
+        key: "{{ copy_local_key }}"
+      tags:
+        - initial
+
+    - name: export bridged ip address in .bashrc
+      blockinfile:
+        backup: yes
+        dest: '/home/{{var_create_user}}/.bashrc'
+        block: |
+          alias dud="du -x --max-depth=1|sort -rn|awk -F / -v c=$COLUMNS 'NR==1{t=\$1} NR>1{r=int(\$1/t*c+.5); b=\"\033[1;31m\"; for (i=0; i<r; i++) b=b\"#\"; printf \" %5.2f%% %s\033[0m %s\n\", \$1/t*100, b, \$2}'|tac"
+          alias dus="du -x --max-depth=1|sort -rn|awk -F / -v c=$COLUMNS 'NR==1{t=\$1} NR>1{r=int(\$1/t*c+.5); b=\"\033[1;31m\"; for (i=0; i<r; i++) b=b\"#\"; printf \" %0.0f Mb %s\033[0m %s\n\", \$1/1024, b, \$2}'|tac"
+    
+    - name: Replace ps1 Bash add \u:SSH:\w  for convinient 
+      replace:
+        path: '/home/{{var_create_user}}/.bashrc'
+        regexp: '\\u@\\h'
+        replace: '\\u@${SSH_CLIENT+ssh:}\\h'
+        backup: yes
+
+
+
+#- name: Convere Create new users
+#  hosts: dockers
+#  become: true

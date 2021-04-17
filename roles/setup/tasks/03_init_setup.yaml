@@ -1,0 +1,49 @@
+---
+
+  - name: Install Prerequisites
+    apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+
+# Install Packages
+  - name: Update apt
+    apt: update_cache=yes
+
+  - name: Install required system packages
+    apt: name={{ sys_packages }} state=latest
+
+#Time Zome
+  - name: set timezone to var_timezone
+    timezone:
+      name: "{{ var_timezone }}"
+
+# UFW Setup
+  - name: UFW - Allow SSH connections
+    ufw:
+      rule: allow
+      name: OpenSSH
+
+  - name: UFW - Allow http connections
+    ufw:
+      rule: allow
+      name: WWW Full
+
+  - name: UFW - Allow mysql connections
+    ufw:
+      rule: allow
+      proto: tcp
+      port: mysql
+
+
+  - name: UFW - Deny all other incoming traffic by default
+    ufw:
+      state: enabled
+      policy: deny
+      direction: incoming
+
+
+# not needed move to role task
+# - hosts: all
+#   #become: true
+#   vars_files:
+#     - vars/default.yml
+
+#   tasks:

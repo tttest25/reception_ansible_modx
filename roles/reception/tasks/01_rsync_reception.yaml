@@ -1,0 +1,38 @@
+---
+  - name: Create a directory if it does not exist
+    ansible.builtin.file:
+      path: /opt/docker/docker-gittify/
+      state: directory
+      mode: '0777'
+
+
+  - name: Recursively change ownership of a directory
+    ansible.builtin.file:
+      path: /opt/docker/docker-gittify/
+      state: directory
+      recurse: yes
+      owner: root
+      group: root
+
+#  - name: Synchronization using rsync protocol (push)
+#    ansible.posix.synchronize:
+#      src: files/reception_202102.tgz
+#      dest: /opt/docker/docker-gittify/
+#      use_ssh_args: yes
+#      rsync_path: "rsync"
+#    tags:
+#      - tagreception
+
+
+  - name: Extract files/reception_202102.tgz into /opt/docker/docker-gittify/
+    ansible.builtin.unarchive:
+      src:  files/reception_202102.tgz
+      dest: /opt/docker/docker-gittify/
+
+  - name: Recursively change ownership of a directory
+    ansible.builtin.file:
+      path: /opt/docker/docker-gittify/modx/www/public
+      state: directory
+      recurse: yes
+      owner: www-data
+      group: www-data

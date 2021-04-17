@@ -1,0 +1,41 @@
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+---
+all:
+  hosts:
+  children:
+    remote:
+      hosts:
+        astra:
+          ansible_host: 192.168.114.115   # Remote host
+          var_hostname: reception-prod-astra
+      vars:
+        ansible_connection: ssh
+        var_create_user: mea
+        var_user_password: $6$mysecretsalt$COLy0oreBCH49XJZRBzcL/5oVUOdtniozXLSwq7eyEAb3f4g/QWlROS3wR0ZFI5MdIAB5DgFQZvK3fTZKfbYG.
+        ansible_become_pass: '{{ become_pass }}'
+        ansible_python_interpreter: /usr/bin/python3
+      children:
+        docker:
+          hosts:
+            astra:
+        webservers:
+          hosts:
+        dbservers:
+          hosts:
+        east:
+          hosts:
+        west:
+          hosts:
+        prod:
+          hosts:
+        test:
+          hosts:
+            three.example.com:

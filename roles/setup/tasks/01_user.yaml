@@ -1,0 +1,25 @@
+---
+  - name: Create User
+    user:
+        name: "{{ var_create_user }}"
+        password: "{{ var_user_password }}"
+        groups: # Empty by default, here we give it some groups
+          - adm
+          - sudo
+          - docker
+        state: present
+        shell: /bin/bash         # Defaults to /bin/bash
+        system: yes              # Defaults to no
+        createhome: yes          # Defaults to yes
+        #home: /home/mea  # Defaults to /home/<username>---
+    tags:
+      - initial
+
+
+  - name: Set authorized key for remote user
+    authorized_key:
+      user: "{{ var_create_user }}"
+      state: present
+      key: "{{ copy_local_key }}"
+    tags:
+      - initial
