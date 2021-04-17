@@ -1,4 +1,4 @@
-# Ansible Astra auto configure MISOJ for modx - based on Ubuntu 20.04#
+# reception_ansible_modx - Ansible Astra auto configure MISOJ for modx - based on Ubuntu 20.04#
 
 ## First STEP password for vault/archive/
 1. remember for EU...59 .....!SERVO
